@@ -2,43 +2,20 @@ module Exercise
   module Arrays
     class << self
       def replace(array)
-        max = array.max
-        array.map { |num| num.positive? ? max : num }
+        max_element = array.reduce { |max, el| el > max ? el : max }
+        array.map { |num| num.positive? ? max_element : num }
       end
 
-      def search(array, query)
-        first = 0
-        last = array.size - 1
-        while first <= last
-          middle_index = ((first + last) / 2).round
-          middle_value = array[middle_index]
-          return middle_index if middle_value == query
+      def search(array, query, first = 0, last = array.size - 1)
+        return -1 if first > last
 
-          if middle_value < query
-            first = middle_index + 1
-          else
-            last = middle_index - 1
-          end
-        end
-        -1
-      end
+        middle_index = ((first + last) / 2).round
+        middle_value = array[middle_index]
 
-      def search_recursive(array, query)
-        iter = lambda do |first, last|
-          return -1 if first > last
+        return search(array, query, (first + last) / 2 + 1, last) if middle_value < query
+        return search(array, query, first, (first + last) / 2 - 1) if middle_value > query
 
-          middle_index = ((first + last) / 2).round
-          middle_value = array[middle_index]
-
-          return middle_index if middle_value == query
-
-          if middle_value < query
-            iter.call((first + last) / 2 + 1, last)
-          else
-            iter.call(first, (first + last) / 2 - 1)
-          end
-        end
-        iter.call(0, array.size - 1)
+        middle_index
       end
     end
   end
