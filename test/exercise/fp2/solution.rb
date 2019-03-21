@@ -6,18 +6,43 @@ module Exercise
 
       # Написать свою функцию my_each
       def my_each
+        iter = lambda do |arr|
+          return self if arr.empty?
+
+          val, *rest = arr
+          yield(val)
+          iter.call(rest)
+        end
+        iter.call(self)
       end
 
       # Написать свою функцию my_map
       def my_map
+        iter = lambda do |arr, acc|
+          return MyArray.new(acc) if arr.empty?
+
+          val, *rest = arr
+          new_val = yield(val)
+          iter.call(rest, [*acc, new_val])
+        end
+        iter.call(self, [])
       end
 
       # Написать свою функцию my_compact
       def my_compact
+        iter = lambda do |arr, acc|
+          return MyArray.new(acc) if arr.empty?
+
+          val, *rest = arr
+          new_acc = val.nil? ? acc : [*acc, val]
+          iter.call(rest, new_acc)
+        end
+        iter.call(self, [])
       end
 
       # Написать свою функцию my_reduce
       def my_reduce
+
       end
     end
   end
