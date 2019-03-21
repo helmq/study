@@ -8,7 +8,7 @@ module Exercise
 
       def search(array, query)
         first = 0
-        last = array.length - 1
+        last = array.size - 1
         while first <= last
           middle_index = ((first + last) / 2).round
           middle_value = array[middle_index]
@@ -38,7 +38,7 @@ module Exercise
             iter.call(first, (first + last) / 2 - 1)
           end
         end
-        iter.call(0, array.length - 1)
+        iter.call(0, array.size - 1)
       end
     end
   end
