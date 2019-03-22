@@ -41,8 +41,18 @@ module Exercise
       end
 
       # Написать свою функцию my_reduce
-      def my_reduce
+      def my_reduce(init = nil)
+        iter = lambda do |acc, arr|
+          return acc if arr.empty?
 
+          val, *rest = arr
+          new_acc = yield(acc, val)
+          iter.call(new_acc, rest)
+        end
+        first, *rest = self
+        arr = init.nil? ? rest : self
+        init ||= first
+        iter.call(init, arr)
       end
     end
   end
