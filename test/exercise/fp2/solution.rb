@@ -18,41 +18,28 @@ module Exercise
 
       # Написать свою функцию my_map
       def my_map
-        iter = lambda do |arr, acc|
-          return MyArray.new(acc) if arr.empty?
-
-          val, *rest = arr
-          new_val = yield(val)
-          iter.call(rest, [*acc, new_val])
-        end
-        iter.call(self, [])
+        result = MyArray.new
+        cb = ->(element) { result << yield(element) }
+        my_each(&cb)
+        result
       end
 
       # Написать свою функцию my_compact
       def my_compact
-        iter = lambda do |arr, acc|
-          return MyArray.new(acc) if arr.empty?
-
-          val, *rest = arr
-          new_acc = val.nil? ? acc : [*acc, val]
-          iter.call(rest, new_acc)
-        end
-        iter.call(self, [])
+        result = MyArray.new
+        cb = ->(element) { result << element unless element.nil? }
+        my_each(&cb)
+        result
       end
 
       # Написать свою функцию my_reduce
       def my_reduce(init = nil)
-        iter = lambda do |acc, arr|
-          return acc if arr.empty?
-
-          val, *rest = arr
-          new_acc = yield(acc, val)
-          iter.call(new_acc, rest)
-        end
         first, *rest = self
-        arr = init.nil? ? rest : self
-        init ||= first
-        iter.call(init, arr)
+        arr = init.nil? ? MyArray.new(rest) : self
+        acc = init.nil? ? first : init
+        cb = ->(element) { acc = yield(acc, element) }
+        arr.my_each(&cb)
+        acc
       end
     end
   end
