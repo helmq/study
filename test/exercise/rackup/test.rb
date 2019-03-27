@@ -5,10 +5,19 @@ require_relative './inatra'
 require_relative './my_app'
 
 class RackTest < Test::Unit::TestCase
-  def test_it_says_hello_world
-    browser = Rack::Test::Session.new(Rack::MockSession.new(Inatra))
-    browser.get '/hello'
-    assert browser.last_response.ok?
-    assert_equal 'Hello World', browser.last_response.body
+  def setup
+    @browser = Rack::Test::Session.new(Rack::MockSession.new(Inatra))
+  end
+
+  def test_get_request
+    @browser.get '/hello'
+    assert @browser.last_response.ok?
+    assert_equal 'Hello World', @browser.last_response.body
+  end
+
+  def test_post_request
+    @browser.post '/another_route'
+    assert @browser.last_response.ok?
+    assert_equal 'Another Route', @browser.last_response.body
   end
 end
